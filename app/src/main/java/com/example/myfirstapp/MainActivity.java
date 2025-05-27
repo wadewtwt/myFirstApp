@@ -19,14 +19,17 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Size;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -181,11 +184,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private boolean isValidUrl(String url) {
+        try {
+            new java.net.URL(url);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     private void showResultDialog(String qrCodeContent) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("扫描结果");
-        builder.setMessage("二维码内容:\n" + qrCodeContent);
 
+        // 创建自定义样式的TextView
+        TextView messageView = new TextView(this);
+        messageView.setText("二维码内容:\n" + qrCodeContent);
+        messageView.setTextSize(20); // 设置文字大小为20sp
+        messageView.setPadding(50, 30, 50, 30); // 设置内边距
+        builder.setView(messageView);
+
+        // 设置按钮文字大小
         builder.setPositiveButton("复制", (dialog, which) -> {
             ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("QR Code Content", qrCodeContent);
@@ -194,13 +213,47 @@ public class MainActivity extends AppCompatActivity {
             resumeScanningAfterDialog(dialog);
         });
 
-        builder.setNegativeButton("关闭", (dialog, which) -> {
-            resumeScanningAfterDialog(dialog);
-        });
-        builder.setCancelable(false); // 禁止点击外部区域关闭对话框
+        // 检查是否是有效的URL
+        if (isValidUrl(qrCodeContent)) {
+            builder.setNegativeButton("直达", (dialog, which) -> {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(qrCodeContent));
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(this, "无法打开链接", Toast.LENGTH_SHORT).show();
+                }
+                resumeScanningAfterDialog(dialog);
+            });
+        } else {
+            builder.setNegativeButton("关闭", (dialog, which) -> {
+                resumeScanningAfterDialog(dialog);
+            });
+        }
+
+        builder.setCancelable(false);
 
         AlertDialog dialog = builder.create();
         dialog.show();
+
+        // 设置按钮样式
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+
+        if (positiveButton != null) {
+            positiveButton.setTextSize(18);
+            positiveButton.setTextColor(getResources().getColor(R.color.button_text));
+            positiveButton.setBackgroundColor(getResources().getColor(R.color.primary_blue_light));
+            positiveButton.setPadding(40, 20, 40, 20);
+            positiveButton.setAllCaps(false);
+        }
+
+        if (negativeButton != null) {
+            negativeButton.setTextSize(18);
+            negativeButton.setTextColor(getResources().getColor(R.color.button_text));
+            negativeButton.setBackgroundColor(getResources().getColor(R.color.primary_green_light));
+            negativeButton.setPadding(40, 20, 40, 20);
+            negativeButton.setAllCaps(false);
+        }
     }
 
     // 在对话框关闭后恢复扫描
