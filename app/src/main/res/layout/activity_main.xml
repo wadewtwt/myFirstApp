@@ -1,20 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <TextView
+        android:id="@+id/scanningInfoText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="你好 wt!"
-        android:textSize="24sp"
-        android:textColor="@android:color/holo_blue_dark"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="50dp"
+        android:background="#80000000"
+        android:padding="10dp"
+        android:text="请将二维码置于框内"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:visibility="gone" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- 你也可以在这里添加一个更复杂的扫描框UI，例如用ImageView覆盖 -->
+
+</FrameLayout>
