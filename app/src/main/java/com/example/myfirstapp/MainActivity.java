@@ -26,9 +26,11 @@ import android.graphics.Rect;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.util.Size;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -195,11 +197,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void showResultDialog(String qrCodeContent) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("扫描结果");
 
         // 创建自定义样式的TextView
         TextView messageView = new TextView(this);
-        messageView.setText("二维码内容:\n" + qrCodeContent);
+        messageView.setText(Html.fromHtml("二维码内容:<br><b>" + qrCodeContent + "</b>", Html.FROM_HTML_MODE_LEGACY));
         messageView.setTextSize(20); // 设置文字大小为20sp
         messageView.setPadding(50, 30, 50, 30); // 设置内边距
         builder.setView(messageView);
@@ -243,6 +244,10 @@ public class MainActivity extends AppCompatActivity {
             positiveButton.setTextSize(18);
             positiveButton.setTextColor(getResources().getColor(R.color.button_text));
             positiveButton.setBackgroundColor(getResources().getColor(R.color.primary_blue_light));
+            // 设置按钮的margin
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) positiveButton.getLayoutParams();
+            params.leftMargin = 50;
+            positiveButton.setLayoutParams(params);
             positiveButton.setPadding(40, 20, 40, 20);
             positiveButton.setAllCaps(false);
         }
@@ -251,6 +256,10 @@ public class MainActivity extends AppCompatActivity {
             negativeButton.setTextSize(18);
             negativeButton.setTextColor(getResources().getColor(R.color.button_text));
             negativeButton.setBackgroundColor(getResources().getColor(R.color.primary_green_light));
+            // 设置按钮的margin
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) negativeButton.getLayoutParams();
+            params.leftMargin = 25;  // 添加左边距
+            negativeButton.setLayoutParams(params);
             negativeButton.setPadding(40, 20, 40, 20);
             negativeButton.setAllCaps(false);
         }
